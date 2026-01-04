@@ -1,5 +1,8 @@
 from sqlalchemy import Boolean, Column, Integer, String
 from app.db.base import Base
+from sqlalchemy.orm import relationship
+from app.schemas import schema
+
 
 class User(Base):
     __tablename__ = "users"
@@ -8,3 +11,4 @@ class User(Base):
     email = Column(String, unique=True, nullable=False)
     harshed_password = Column(String, nullable=False)
     is_active = Column(Boolean, default=False)
+    posts = relationship("Post", back_populates="user")
