@@ -1,12 +1,31 @@
 from pydantic import BaseModel
 
 
+class User(BaseModel):
+    id: int
+    username: str
+    email: str
+    hashed_password: str
+    is_active: bool
 
 class UserCreate(BaseModel):
     username: str
     password: str
-    #password: bcrypt.hashpw(Annotated[str, Form()].encode('utf-8'), salt).decode('utf-8')
     email: str
+
+class PostCreate(BaseModel):
+    title: str
+    content: str
+    image_url: str | None
+
+class Post(BaseModel):
+    id: int
+    title: str
+    content: str
+    image_url: str | None
+    likes: int
+    username: str
+    timestamp: str
 
 class PostResponse(BaseModel):
     id: int
@@ -15,3 +34,5 @@ class PostResponse(BaseModel):
     image_url: str | None
     likes: int
     username: str
+    timestamp: str
+

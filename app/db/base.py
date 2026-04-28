@@ -29,11 +29,11 @@ salt = bcrypt.gensalt()
 
 response = {"message": "User created"}
 
-def create_new_user(user: UserCreate, db: Session = Depends(get_db)):
-    new_user = User(username=user.username, password=user.password)
-    db.add(new_user)
-    db.commit() # Commit the changes to the database
-    db.refresh(new_user) # Refresh to get any DB-generated fields like the user ID
+# def create_new_user(user: UserCreate, db: Session = Depends(get_db)):
+#     new_user = User(username=user.username, password=user.password)
+#     db.add(new_user)
+#     db.commit() # Commit the changes to the database
+#     db.refresh(new_user) # Refresh to get any DB-generated fields like the user ID
  
-    return new_user
+#     return new_user
  

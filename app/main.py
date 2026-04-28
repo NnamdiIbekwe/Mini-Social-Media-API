@@ -5,53 +5,55 @@ from app.db.base import Base, SessionLocal, engine, get_db, salt
 from app import models
 #import bcrypt
 from sqlalchemy.orm import Session
+from app.api.v1 import post as post_router
+from app.api.v1 import user as user_router
+from app.core.security import get_password_harsh
 
 #Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="Mini_Social_Media_API")
+app = FastAPI(title="Mini_Social_Media_API")    
 
-@app.post("/")
-def register_user(
-    #user: schema.UserCreate, 
-    #db: Annotated[Session, Depends(get_db)],
-    username: Annotated[str, Form()],
-    password: Annotated[str, Form()], 
-    #password: bcrypt.hashpw(Annotated[str, Form()].encode('utf-8'), salt).decode('utf-8'),
-    email: Annotated[str, Form()],
-    db: Session = Depends(get_db)
-):
-    #existing_user = db.query(models.User).filter(models.User.username == username).first()
-    return response
+@app.get("/")
+async def root():
+    return {"message": "Welcome to the Mini Social Media API!"}
 
-@app.post("/users/")
-async def Create_Post(
-    username: Annotated[str, Form()],
-    tilte: Annotated[str, Form()],
-    content: Annotated[str, Form()],
-    image: Annotated[UploadFile | None, File()] = None,
-    db: Session = Depends(get_db),
-):
+app.include_router(post_router.router, prefix="/api/v1", tags=["posts"])
+app.include_router(user_router.router, prefix="/api/v1", tags=["users"])
 
-    db.add(Post)
-    db.commit()
-    return {"message": "Post created"}
-    #return{"username": username, "email": email}
 
-#@app.post("/posts/")
-#async def post():
-#    return
 
-@app.get("/posts/")
-async def all_posts(db: Session = Depends(get_db)):
-    return db.query(models.Post).all()
+# # @app.post("/")
+# # def register_user(user: schema.UserCreate, db:session = Depends(get_db)):
 
-@app.get("/users/{username}/posts")
-async def post_by_user():
-    return
+# @app.post("/users/")
+# # async def Create_Post(
+# #     username: Annotated[str, Form()],
+# #     tilte: Annotated[str, Form()],
+# #     content: Annotated[str, Form()],
+# #     image: Annotated[UploadFile | None, File()] = None,
+# #     db: Session = Depends(get_db),
+# # ):
 
-@app.post("/posts/{post_id}/like")
-async def like_a_post(Post_id: int, User_id: int,):
-    post = db.query(models.posts).filter(models.Post_id)
-    post.likes += 1
-    db.commit()
-    return {"status": "Liked"}
+# #     db.add(Post)
+# #     db.commit()
+# #     return {"message": "Post created"}
+#     #return{"username": username, "email": email}
+
+# #@app.post("/posts/")
+# #async def post():
+# #    return
+
+# @app.get("/posts/")
+# async def all_posts(db: Session = Depends(get_db)):
+#     return db.query(models.Post).all()
+
+# @app.get("/users/{username}/posts")
+# async def post_by_user():
+#     return
+
+# @app.post("/posts/{post_id}/like")
+# async def like_a_post(Post_id: int, User_id: int,):
+#     post = db.query(models.posts).filter(models.Post_id)
+#     post.likes += 1
+#     db.commit()
+#     return {"status": "Liked"}
