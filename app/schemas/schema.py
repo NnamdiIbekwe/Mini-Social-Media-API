@@ -5,7 +5,6 @@ class User(BaseModel):
     id: int
     username: str
     email: str
-    hashed_password: str
     is_active: bool
 
 class UserCreate(BaseModel):
@@ -27,6 +26,15 @@ class Post(BaseModel):
     username: str
     timestamp: str
 
+class UserResponse(BaseModel):
+    id: int
+    username: str
+    email: str
+    is_active: bool
+
+    class Config:
+        from_attributes = True
+
 class PostResponse(BaseModel):
     id: int
     title: str
@@ -35,4 +43,7 @@ class PostResponse(BaseModel):
     likes: int
     username: str
     timestamp: str
+
+    class Config:
+        from_attributes = True
 

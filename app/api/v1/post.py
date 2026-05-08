@@ -42,3 +42,21 @@ async def like_a_post(post_id: int, user_id: int, db: Session = Depends(get_db))
     
     db.commit() # Commit the changes to the database
     return {"status": "Liked"}
+
+@router.get("/")
+async def all_posts(db: Session = Depends(get_db)):
+    return db.query(models.Post).all()
+
+@router.get("/users/{username}/posts")
+async def post_by_user(username: str, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.username ==username).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return db.query(models.Post).filter(models.Post.username == username).all()
+
+@router.get("/{post_id}")
+async def get_post(post_id: int, db: Session = Depends(get_db)):
+    post = db.query(models.Post).filter(models.Post.id == post_id).first()
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    return post

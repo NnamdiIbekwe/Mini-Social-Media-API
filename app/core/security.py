@@ -1,11 +1,13 @@
 from fastapi import FastAPI
-from app.db.base import Base, SessionLocal, engine, get_db, salt
+from app.db.base import Base
 from app import models
 import bcrypt
 
 salt = bcrypt.gensalt()
 
 
-async def get_password_harsh(password: str) -> str: 
-    hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
-    return hashed_password.decode('utf-8')
+def get_password_hashed(password: str) -> str: 
+    return bcrypt.hashpw(password.encode(), salt).decode()
+
+def verify_password(password: str, hash_password:str) -> bool:
+    return bcrypt.checkpw(password.encode(), hash_password.encode())

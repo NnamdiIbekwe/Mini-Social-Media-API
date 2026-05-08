@@ -1,13 +1,13 @@
 from fastapi import FastAPI, HTTPException, Depends, File, UploadFile, Form
 from typing import Annotated
 from app.schemas import schema
-from app.db.base import Base, SessionLocal, engine, get_db, salt 
+from app.db.base import Base
 from app import models
 #import bcrypt
 from sqlalchemy.orm import Session
 from app.api.v1 import post as post_router
 from app.api.v1 import user as user_router
-from app.core.security import get_password_harsh
+
 
 #Base.metadata.create_all(bind=engine)
 
@@ -17,8 +17,9 @@ app = FastAPI(title="Mini_Social_Media_API")
 async def root():
     return {"message": "Welcome to the Mini Social Media API!"}
 
-app.include_router(post_router.router, prefix="/api/v1", tags=["posts"])
 app.include_router(user_router.router, prefix="/api/v1", tags=["users"])
+app.include_router(post_router.router, prefix="/api/v1", tags=["posts"])
+
 
 
 
