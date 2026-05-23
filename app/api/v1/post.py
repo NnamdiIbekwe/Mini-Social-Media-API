@@ -2,17 +2,18 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.schemas import schema
 from app.db.base import get_db
-from app import models
+from app.models.posts import Post, Like
+from app.models.users import User
 
 router = APIRouter(prefix="/posts", tags=["posts"])
 
 
 @router.post("/")
 async def create_new_post(post: schema.PostCreate, db: Session = Depends(get_db)):
-    new_post = models.Post(
+    new_post = Post(
         content=post.content,
         image_url=post.image_url,
-        likes=post.likes,
+        # likes=post.likes,
         username=post.username,
         timestamp=post.timestamp
     )
