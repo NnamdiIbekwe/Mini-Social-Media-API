@@ -12,7 +12,9 @@ class Post(Base):
     is_public = Column(Boolean, default=True)
     likes = Column(Integer, default=0)
     user_id = Column(Integer, ForeignKey("users.id"))
-    owner = relationship("User", back_populates="posts")
+    users = relationship("User", back_populates="posts")
+
+
 
 class Like(Base):
     __tablename__ = "likes"
