@@ -13,9 +13,10 @@ class UserCreate(BaseModel):
     email: str
 
 class PostCreate(BaseModel):
-    title: str
     content: str
     image_url: str | None
+    is_public: bool = True
+    user_id: int
 
 class Post(BaseModel):
     id: int

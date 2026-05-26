@@ -11,12 +11,10 @@ router = APIRouter(prefix="/posts", tags=["posts"])
 @router.post("/")
 async def create_new_post(post: schema.PostCreate, db: Session = Depends(get_db)):
     new_post = Post(
-        title=post.title,
         content=post.content,
         image_url=post.image_url,
-        # likes=post.likes,
-        username=post.username,
-        # timestamp=post.timestamp
+        is_public=post.is_public,
+        user_id=post.user_id,
     )
     db.add(new_post)
     db.commit() # Commit the changes to the database
@@ -26,8 +24,6 @@ async def create_new_post(post: schema.PostCreate, db: Session = Depends(get_db)
 
 @router.post("/{post_id}/like")
 async def like_a_post(post_id: int, user_id: int, db: Session = Depends(get_db)):
-# async def like_a_post(post_id: int, db: Session = Depends(get_db) current_user: User = Depends(get_current_user)):
-    # user_id = current_user.id
     post = db.query(Post).filter(Post.id == post_id).first()
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
@@ -51,12 +47,12 @@ async def like_a_post(post_id: int, user_id: int, db: Session = Depends(get_db))
 async def all_posts(db: Session = Depends(get_db)):
     return db.query(Post).all()
 
-@router.get("/users/{username}/posts")
-async def post_by_user(username: str, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.username == username).first()
+@router.get("/users/{user_id}/posts")
+async def post_by_user(user_id: int, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    return db.query(Post).filter(Post.username == username).all()
+    return db.query(Post).filter(Post.user_id == user.id).all()
 
 
 @router.get("/{post_id}")
