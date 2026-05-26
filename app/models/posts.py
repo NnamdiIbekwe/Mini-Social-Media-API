@@ -12,6 +12,8 @@ class Post(Base):
     is_public = Column(Boolean, default=True)
     likes = Column(Integer, default=0)
     user_id = Column(Integer, ForeignKey("users.id"))
+    created_at = Column(datetime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    
     users = relationship("User", back_populates="posts")
 
 
