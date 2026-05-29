@@ -6,7 +6,7 @@ from app.core.security import get_password_hashed, verify_password
 from app.models.users import User
 from app.models.posts import Post
 
-router = APIRouter(prefix="/users", tags=["users"])
+router = APIRouter(prefix="/users") #tags=["users"])
 
 @router.post("/", response_model=schema.UserResponse)
 async def create_new_user(user: schema.UserCreate, db: Session = Depends(get_db)):

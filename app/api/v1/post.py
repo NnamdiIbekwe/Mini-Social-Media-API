@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Form, UploadFile, File
 from sqlalchemy.orm import Session
+import shutil, os
 from app.schemas import schema
 from app.db.base import get_db
 from app.models.posts import Post, Like
@@ -20,7 +21,7 @@ async def create_new_post(post: schema.PostCreate, db: Session = Depends(get_db)
     db.commit() # Commit the changes to the database
     db.refresh(new_post) # Refresh to get any DB-generated fields like the post ID
  
-    return new_post
+    return {"message": "Post created successfully", "post": new_post}
 
 @router.post("/{post_id}/like")
 async def like_a_post(post_id: int, user_id: int, db: Session = Depends(get_db)):
@@ -41,11 +42,12 @@ async def like_a_post(post_id: int, user_id: int, db: Session = Depends(get_db))
     post.likes += 1
     
     db.commit() # Commit the changes to the database
-    return {"status": "Liked"}
+    return {"message": "Post liked successfully"}
 
 @router.get("/")
 async def all_posts(db: Session = Depends(get_db)):
-    return db.query(Post).all()
+    post = db.query(Post).all()
+    return {"Total": len(post), "posts": post}
 
 @router.get("/users/{user_id}/posts")
 async def post_by_user(user_id: int, db: Session = Depends(get_db)):
