@@ -7,14 +7,12 @@ class User(BaseModel):
     email: str
     is_active: bool
 
-class UserCreate(BaseModel):
-    username: str
-    password: str
-    email: str
+class UserCreate(User):
+    hashed_password: str
 
 class PostCreate(BaseModel):
     content: str
-    image_url: str | None
+    image_url: str | UploadFile | None
     is_public: bool = True
     user_id: int
 
@@ -23,28 +21,26 @@ class Post(BaseModel):
     title: str
     content: str
     image_url: str | None
-    likes: int
+    likes: int = 0
     username: str
     timestamp: str
 
-class UserResponse(BaseModel):
-    id: int
-    username: str
-    email: str
-    is_active: bool
-
-    class Config:
-        from_attributes = True
-
-class PostResponse(BaseModel):
-    id: int
-    title: str
-    content: str
-    image_url: str | None
-    likes: int
-    username: str
+class UserResponse(User):
     timestamp: str
 
     class Config:
         from_attributes = True
+
+class PostResponse(Post):
+    pass
+
+    class Config:
+        from_attributes = True
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+Class TokenData(BaseModel):
+    username: str | None = None
 

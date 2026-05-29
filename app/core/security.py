@@ -19,8 +19,8 @@ def get_password_hashed(password: str) -> str:
 def verify_password(password: str, hash_password:str) -> bool:
     return pwd_context.verify(password, hash_password)
 
-def create_access_token(data: dict, expires_delta: int / None = None) -> str:
-    if expires_delta is none:
+def create_access_token(data: dict, expires_delta: int | None = None) -> str:
+    if expires_delta is None:
         expires_delta = datetime.now(timezone.utc) + timedelta(settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     else:
         expires_delta = datetime.now(timezone.utc) + timedelta(expires_delta)
@@ -28,10 +28,10 @@ def create_access_token(data: dict, expires_delta: int / None = None) -> str:
     token =jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return token
 
-def decode_access_token(token: str) -> dict / None:
+def decode_access_token(token: str) -> dict | None:
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         return payload
     except JWTError:
-        return none
+        return None
 

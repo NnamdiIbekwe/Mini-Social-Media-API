@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Form, UploadFile, File
 from sqlalchemy.orm import Session
 import shutil, os
-from app.schemas import schema
+from app.schemas.schema import PostCreate
 from app.db.base import get_db
 from app.models.posts import Post, Like
 from app.models.users import User
@@ -10,7 +10,7 @@ router = APIRouter(prefix="/posts", tags=["posts"])
 
 
 @router.post("/")
-async def create_new_post(post: schema.PostCreate, db: Session = Depends(get_db)):
+async def create_new_post(post: PostCreate, db: Session = Depends(get_db)):
     new_post = Post(
         content=post.content,
         image_url=post.image_url,
