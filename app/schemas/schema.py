@@ -1,18 +1,18 @@
 from pydantic import BaseModel
+from fastapi import UploadFile
 
 
 class User(BaseModel):
-    id: int
     username: str
     email: str
-    is_active: bool
+    
 
 class UserCreate(User):
     hashed_password: str
 
 class PostCreate(BaseModel):
     content: str
-    image_url: str | UploadFile | None
+    image_url: str | None
     is_public: bool = True
     user_id: int
 
@@ -26,7 +26,8 @@ class Post(BaseModel):
     timestamp: str
 
 class UserResponse(User):
-    timestamp: str
+    id: int
+    is_active: bool
 
     class Config:
         from_attributes = True
@@ -41,6 +42,6 @@ class Token(BaseModel):
     access_token: str
     token_type: str
 
-Class TokenData(BaseModel):
+class TokenData(BaseModel):
     username: str | None = None
 

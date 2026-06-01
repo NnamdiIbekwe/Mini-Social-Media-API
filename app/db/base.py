@@ -6,11 +6,11 @@ from app.db.session import sessionLocal
 
 Base = declarative_base()
 
-# engine = create_engine(
-#     settings.DATABASE_URL
-# )
+engine = create_engine(
+    settings.DATABASE_URL
+)
 
-# SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine) 
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine) 
 
 # def get_db():
 #     db = SessionLocal()

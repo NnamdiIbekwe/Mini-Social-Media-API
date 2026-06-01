@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.schemas import schema
-from app.db.base import get_db
+from app.api.depends import get_db, get_current_user
 # from app.core.security import get_password_hashed, verify_password
 from app.models.users import User
 from app.models.posts import Post
@@ -40,18 +40,18 @@ router = APIRouter(prefix="/users") #tags=["users"])
 #     return {"message": "Login successful"}
 
 @router.get("/{username}", response_model=schema.UserResponse)
-async def get_user(username: str, db: Session = Depends(get_db)):
+async def get_user(username: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     user = db.query(User).filter(User.username == username).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
 @router.get("/", response_model=list[schema.UserResponse])
-async def all_users(db: Session = Depends(get_db)):
+async def all_users(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     return db.query(User).all()
 
 @router.get("/{username}/posts")
-async def get_user_posts(username: str, db: Session = Depends(get_db)):
+async def get_user_posts(username: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     user = db.query(User).filter(User.username == username).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")

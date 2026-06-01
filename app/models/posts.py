@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Integer, String, ForeignKey
+from sqlalchemy import Boolean, Column, Integer, String, ForeignKey, DateTime
 from app.db.base import Base
 from sqlalchemy.orm import relationship
 from datetime import datetime, timezone
@@ -13,7 +13,7 @@ class Post(Base):
     is_public = Column(Boolean, default=True)
     likes = Column(Integer, default=0)
     user_id = Column(Integer, ForeignKey("users.id"))
-    created_at = Column(datetime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     
     users = relationship("User", back_populates="posts")
 

@@ -7,6 +7,7 @@ from fastapi import FastAPI, HTTPException, Depends, File, UploadFile, Form
 # from sqlalchemy.orm import Session
 from app.api.v1 import post as post_router
 from app.api.v1 import user as user_router
+from app.api.v1 import auth as auth_router
 
 
 #Base.metadata.create_all(bind=engine)
@@ -19,6 +20,7 @@ async def root():
 
 app.include_router(user_router.router, prefix="/api/v1", tags=["users"])
 app.include_router(post_router.router, prefix="/api/v1", tags=["posts"])
+app.include_router(auth_router.router, prefix="/api/v1", tags=["auth"])
 
 
 
