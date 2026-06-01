@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Depends, HTTPException, Form, UploadFile, File
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-import shutil, os
-from app.schemas.schema import PostCreate
+
+from app.schemas.schema import PostCreate, PostResponse, LikeResponse
 from app.api.depends import get_db, get_current_user
 from app.models.posts import Post, Like
 from app.models.users import User
@@ -9,7 +9,7 @@ from app.models.users import User
 router = APIRouter(prefix="/posts", tags=["posts"])
 
 
-@router.post("/")
+@router.post("/", response_model=PostResponse)
 async def create_new_post(post: PostCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     new_post = Post(
         content=post.content,
@@ -23,7 +23,7 @@ async def create_new_post(post: PostCreate, db: Session = Depends(get_db), curre
  
     return {"message": "Post created successfully", "post": new_post}
 
-@router.post("/{post_id}/like")
+@router.post("/{post_id}/like", response_model=LikeResponse)
 async def like_a_post(post_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     post = db.query(Post).filter(Post.id == post_id).first()
     if not post:
@@ -44,12 +44,12 @@ async def like_a_post(post_id: int, current_user: User = Depends(get_current_use
     db.commit() # Commit the changes to the database
     return {"message": f"Post{post_id} liked successfully by user {current_user.username}"}
 
-@router.get("/")
+@router.get("/", response_model=list[PostResponse])
 async def all_posts(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    post = db.query(Post).all()
-    return {"Total": len(post), "posts": post}
+    posts = db.query(Post).all()
+    return posts
 
-@router.get("/users/{user_id}/posts")
+@router.get("/users/{user_id}/posts", response_model=list[PostResponse])
 async def post_by_user(user_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
@@ -57,7 +57,7 @@ async def post_by_user(user_id: int, db: Session = Depends(get_db), current_user
     return db.query(Post).filter(Post.user_id == user.id).all()
 
 
-@router.get("/{post_id}")
+@router.get("/{post_id}", response_model=PostResponse)
 async def get_post(post_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     post = db.query(Post).filter(Post.id == post_id).first()
     if not post:

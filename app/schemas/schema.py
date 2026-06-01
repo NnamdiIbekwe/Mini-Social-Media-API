@@ -8,7 +8,7 @@ class User(BaseModel):
     
 
 class UserCreate(User):
-    hashed_password: str
+    password: str
 
 class PostCreate(BaseModel):
     content: str
@@ -33,10 +33,13 @@ class UserResponse(User):
         from_attributes = True
 
 class PostResponse(Post):
-    pass
-
     class Config:
         from_attributes = True
+
+class LikeResponse(BaseModel):
+    user_id: int
+    post_id: int
+    
 
 class Token(BaseModel):
     access_token: str

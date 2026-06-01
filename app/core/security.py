@@ -1,30 +1,22 @@
-from fastapi import FastAPI
-from passlib.context import CryptContext
 from datetime import datetime, timedelta, timezone
 from jose import JWTError, jwt
 from app.core.config import settings
-from app.db.base import Base
-from app import models
 import bcrypt
 
-salt = bcrypt.gensalt()
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-# OAuth2PasswordBearer(tokenUrl="token")
 
 
 def get_password_hashed(password: str) -> str: 
-    return pwd_context.hash(password)
+    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
 def verify_password(password: str, hash_password:str) -> bool:
-    return pwd_context.verify(password, hash_password)
+    return bcrypt.checkpw(password.encode("utf-8"), hash_password.encode("utf-8"))
 
 def create_access_token(data: dict, expires_delta: int | None = None) -> str:
     if expires_delta is None:
-        expires_delta = datetime.now(timezone.utc) + timedelta(settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        expires_delta = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     else:
-        expires_delta = datetime.now(timezone.utc) + timedelta(expires_delta)
-    payload = {"sub": data, "exp": expires_delta}
+        expires_delta = datetime.now(timezone.utc) + expires_delta
+    payload = {"sub": data["sub"], "exp": expires_delta}
     token =jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return token
 

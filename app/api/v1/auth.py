@@ -1,8 +1,9 @@
 from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.schemas.schema import Token, UserResponse
+from app.schemas.schema import Token, UserResponse, UserCreate
 from app.models.users import User
+from app.core.config import settings
 from app.core.security import get_password_hashed, verify_password, create_access_token, decode_access_token
 from app.api.depends import get_db, get_current_user
 
@@ -10,7 +11,7 @@ from app.api.depends import get_db, get_current_user
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/", response_model=UserResponse)
-async def sign_up(user: User, db: Session = Depends(get_db)):
+async def sign_up(user: UserCreate, db: Session = Depends(get_db)):
     existing_user = db.query(User).filter(
         (User.username == user.username) | (User.email == user.email)
     ).first()
@@ -26,7 +27,7 @@ async def sign_up(user: User, db: Session = Depends(get_db)):
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    return {"message": "User created successfully", "user": new_user}
+    return new_user
 
 
 @router.post("/login", response_model=Token)
