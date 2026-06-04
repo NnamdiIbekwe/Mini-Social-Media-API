@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta, timezone
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+
 from app.schemas.schema import Token, UserResponse, UserCreate
 from app.models.users import User
 from app.core.config import settings
@@ -31,12 +33,12 @@ async def sign_up(user: UserCreate, db: Session = Depends(get_db)):
 
 
 @router.post("/login", response_model=Token)
-async def log_in(username: str, password: str, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.username == username).first()
+async def log_in(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.username == form_data.username).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    
-    if not verify_password(password, user.hashed_password): #check this syntax later
+
+    if not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=400, detail="Incorrect password")
     
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
