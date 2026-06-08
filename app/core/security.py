@@ -16,7 +16,7 @@ def create_access_token(data: dict, expires_delta: int | None = None) -> str:
         expires_delta = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     else:
         expires_delta = datetime.now(timezone.utc) + expires_delta
-    payload = {"sub": data["sub"], "exp": expires_delta}
+    
     token =jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return token
 

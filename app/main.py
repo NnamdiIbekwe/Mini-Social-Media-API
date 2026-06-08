@@ -15,8 +15,9 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 async def root():
     return {"message": "Welcome to the Mini Social Media API!"}
 
+app.include_router(auth_router.router, prefix="/api/v1", tags=["auth"])
 app.include_router(user_router.router, prefix="/api/v1", tags=["users"])
 app.include_router(post_router.router, prefix="/api/v1", tags=["posts"])
-app.include_router(auth_router.router, prefix="/api/v1", tags=["auth"])
+
 
 
